@@ -1,0 +1,29 @@
+services:
+  mariadb:
+    image: mariadb:12.1.1-rc
+    container_name: employees-mariadb
+    environment:
+      MARIADB_DATABASE: employees
+      MARIADB_USER: employees
+      MARIADB_PASSWORD: employees
+      MARIADB_ROOT_PASSWORD: employees
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+
+  employees:
+    image: employees:1.0.0
+    container_name: employees-app
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/employees
+      SPRING_DATASOURCE_USERNAME: employees
+      SPRING_DATASOURCE_PASSWORD: employees
+    ports:
+      - "8081:8080"
