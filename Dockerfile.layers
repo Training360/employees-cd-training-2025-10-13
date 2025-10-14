@@ -1,0 +1,13 @@
+FROM eclipse-temurin:21.0.8_9-jdk AS builder
+WORKDIR /app
+COPY target/*.jar employees.jar
+RUN java -Djarmode=tools -jar employees.jar extract --layers --destination extracted
+
+
+FROM eclipse-temurin:21.0.8_9-jdk
+WORKDIR /app
+COPY --from=builder /app/extracted/dependencies/ ./
+COPY --from=builder /app/extracted/spring-boot-loader/ ./
+COPY --from=builder /app/extracted/snapshot-dependencies/ ./
+COPY --from=builder /app/extracted/application/ ./
+CMD ["java", "-jar", "employees.jar"]
