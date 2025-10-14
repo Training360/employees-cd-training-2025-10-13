@@ -1,0 +1,15 @@
+FROM eclipse-temurin:21.0.8_9-jdk AS builder
+RUN apt update && apt install -y dos2unix 
+WORKDIR /app
+COPY mvnw pom.xml ./
+COPY .mvn .mvn
+RUN chmod +x mvnw && \
+    dos2unix mvnw
+RUN ./mvnw test
+COPY src ./src
+RUN ./mvnw package
+
+FROM  eclipse-temurin:21.0.8_9-jdk
+WORKDIR /app
+COPY --from=builder /app/target/*.jar employees.jar
+CMD ["java", "-jar", "employees.jar"]
