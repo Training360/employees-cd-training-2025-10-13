@@ -21,7 +21,7 @@ spec:
         app: employees-app
     spec:
       containers:
-        - image: employees:1.0.0
+        - image: vicziani/employees
           name: employees-app
           envFrom:
             - configMapRef:
