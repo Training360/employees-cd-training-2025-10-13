@@ -21,9 +21,15 @@ jobs:
                   java-version: '21'
                   cache: 'maven'
             - name: Build with Maven
-              run: ./mvnw -B package 
+              run: ./mvnw -B package
+            - name: Archive production artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: employees-jar
+                  path: target/employees-*.jar
 
     integration-tests:
+        if: false
         runs-on: ubuntu-latest
         needs: build
         env:
@@ -61,8 +67,31 @@ jobs:
     build-image:
         runs-on: ubuntu-latest
         needs: build
+        permissions:
+            contents: read
+            packages: write
         steps:
             - run: echo "Build Docker images here"
+            - name: Checkout code
+              uses: actions/checkout@v5
+            - name: Download artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: employees-jar
+                  path: target/
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v4
+              with:
+                context: .
+                file: Dockerfile.layers
+                push: true
+                tags: ghcr.io/${{ github.repository }}:latest
 
     deploy:
         runs-on: ubuntu-latest  
