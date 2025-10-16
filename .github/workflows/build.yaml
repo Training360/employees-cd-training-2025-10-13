@@ -91,7 +91,7 @@ jobs:
                 context: .
                 file: Dockerfile.layers
                 push: true
-                tags: ghcr.io/${{ github.repository }}:latest
+                tags: ghcr.io/training360/employees-cd-training-2025-10-13:latest
 
     deploy:
         runs-on: ubuntu-latest  
