@@ -89,7 +89,8 @@ jobs:
                   path: target/
             - name: Read version from build job
               run: |
-                echo "VERSION=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
+                VERSION=${{ needs.build.outputs.version }}
+                echo "VERSION=$VERSION" >> $GITHUB_ENV
                 echo "Version from build job: $VERSION"
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v3
@@ -103,7 +104,7 @@ jobs:
                 context: .
                 file: Dockerfile.layers
                 push: true
-                tags: ghcr.io/training360/employees-cd-training-2025-10-13:latest,ghcr.io/training360/employees-cd-training-2025-10-13:${{ env.VERSION }}"
+                tags: ghcr.io/training360/employees-cd-training-2025-10-13:latest,ghcr.io/training360/employees-cd-training-2025-10-13:${{ env.VERSION }}
 
     deploy:
         runs-on: ubuntu-latest  
