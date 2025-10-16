@@ -23,14 +23,10 @@ jobs:
                   cache: 'maven'
             - name: Set version
               id: set_version
-            #  run: |
-            #    VERSION="1.0.0-${GITHUB_RUN_NUMBER}"
-            #    echo "Version: $VERSION"
-            #    echo "VERSION=$VERSION" >> $GITHUB_ENV
-
               run: |
-                 echo "VERSION=1.0.0-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
-                 echo "Version: $VERSION"
+                VERSION="1.0.0-${GITHUB_RUN_NUMBER}"
+                echo "Version: $VERSION"            
+                echo "VERSION=$VERSION" >> $GITHUB_ENV
             - name: Build with Maven
               run: ./mvnw -B package -Drevision=$VERSION
             - name: Archive production artifacts
