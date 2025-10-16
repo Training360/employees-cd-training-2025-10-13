@@ -28,6 +28,16 @@ jobs:
         needs: build
         steps:
             - run: echo "Run integration tests here"
+            - name: Checkout code
+              uses: actions/checkout@v5
+            - name: Set up Java
+              uses: actions/setup-java@v5
+              with:
+                  distribution: 'temurin'
+                  java-version: '21'
+                  cache: 'maven'
+            - name: Build with Maven
+              run: ./mvnw -B verify 
     
     build-image:
         runs-on: ubuntu-latest
