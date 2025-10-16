@@ -125,7 +125,7 @@ jobs:
                 echo "Version from build job: $VERSION"
             - name: Update deployment manifest
               run: |
-                yq e '.image.tag = "$VERSION"' -i values.yaml
+                yq e '.image.tag = "${{ env.VERSION }}"' -i values.yaml
                 cat values.yaml
             - name: Commit and push changes
               run: |
